@@ -1,87 +1,135 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
-const VIDEO_IDS = [
-  { id: '7558021274602081554', label: 'Fish Keeping Tips' },
-  { id: '7598033694791716114', label: 'Car Accessories Haul' },
-  { id: '7532351516213038344', label: 'Yellow Basket Review' },
-  { id: '7529768561028435207', label: 'Affiliate Tips 101' },
+const VIDEOS = [
+  {
+    id:    '7558021274602081554',
+    label: 'Fish Keeping Tips',
+    emoji: '🐟',
+    bg:    '#0f2027',
+  },
+  {
+    id:    '7598033694791716114',
+    label: 'Car Accessories Haul',
+    emoji: '🚗',
+    bg:    '#1a1a2e',
+  },
+  {
+    id:    '7532351516213038344',
+    label: 'Yellow Basket Review',
+    emoji: '🧺',
+    bg:    '#1c1208',
+  },
+  {
+    id:    '7529768561028435207',
+    label: 'Affiliate Tips 101',
+    emoji: '💰',
+    bg:    '#0d1a0d',
+  },
 ]
 
-function VideoEmbed({ video, index }) {
-  const ref    = useRef(null)
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    // Load TikTok embed script once
-    if (!document.getElementById('tiktok-embed-script')) {
-      const s = document.createElement('script')
-      s.id  = 'tiktok-embed-script'
-      s.src = 'https://www.tiktok.com/embed.js'
-      s.async = true
-      s.onload = () => setReady(true)
-      document.body.appendChild(s)
-    } else {
-      setReady(true)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (ready && window.tiktok && ref.current) {
-      try { window.tiktok.init() } catch {}
-    }
-  }, [ready])
-
+function VideoCard({ video, index }) {
+  const [hovered, setHovered] = useState(false)
   const url = `https://www.tiktok.com/@vincelayug20/video/${video.id}`
 
   return (
-    <div className="reveal" style={{
-      borderRadius: 16, overflow: 'hidden',
-      border: '1px solid #efefef',
-      background: '#111',
-      transitionDelay: `${index * 0.08}s`,
-    }}>
-      <blockquote
-        ref={ref}
-        className="tiktok-embed"
-        cite={url}
-        data-video-id={video.id}
-        style={{ maxWidth: '100%', minWidth: 'unset' }}
-      >
-        <section>
-          <a href={url} target="_blank" rel="noreferrer"
-            style={{
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center',
-              height: 300, background: '#111', color: '#fff',
-              textDecoration: 'none', fontSize: 12,
-              gap: 12,
-            }}>
-            <div style={{
-              width: 48, height: 48, borderRadius: '50%',
-              border: '2px solid rgba(255,255,255,0.3)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <div style={{
-                width: 0, height: 0,
-                borderTop: '8px solid transparent',
-                borderBottom: '8px solid transparent',
-                borderLeft: '14px solid rgba(255,255,255,0.8)',
-                marginLeft: 3,
-              }}/>
-            </div>
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11 }}>
-              {video.label}
-            </span>
-            <span style={{
-              color: '#f5c842', fontSize: 10, fontWeight: 700,
-              letterSpacing: '0.08em', textTransform: 'uppercase',
-            }}>
-              Watch on TikTok →
-            </span>
-          </a>
-        </section>
-      </blockquote>
-    </div>
+    <a href={url} target="_blank" rel="noreferrer"
+      className="reveal"
+      style={{
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'flex-end',
+        aspectRatio: '9/16',
+        borderRadius: 16, overflow: 'hidden',
+        textDecoration: 'none',
+        background: video.bg,
+        position: 'relative',
+        transform: hovered ? 'scale(1.03)' : 'scale(1)',
+        transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+        transitionDelay: `${index * 0.05}s`,
+        cursor: 'pointer',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}>
+
+      {/* Gradient overlay */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 55%)',
+      }}/>
+
+      {/* Emoji */}
+      <div style={{
+        position: 'absolute', top: '30%', left: '50%',
+        transform: `translate(-50%, -50%) ${hovered ? 'scale(1.2)' : 'scale(1)'}`,
+        fontSize: 36,
+        transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+        filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
+      }}>
+        {video.emoji}
+      </div>
+
+      {/* Play circle */}
+      <div style={{
+        position: 'absolute', top: '52%', left: '50%',
+        transform: `translate(-50%, -50%) ${hovered ? 'scale(1.15)' : 'scale(1)'}`,
+        width: 40, height: 40, borderRadius: '50%',
+        border: `2px solid ${hovered ? '#f5c842' : 'rgba(255,255,255,0.5)'}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: hovered ? 'rgba(245,200,66,0.15)' : 'rgba(255,255,255,0.05)',
+        transition: 'all 0.25s',
+      }}>
+        <div style={{
+          width: 0, height: 0,
+          borderTop: '7px solid transparent',
+          borderBottom: '7px solid transparent',
+          borderLeft: `12px solid ${hovered ? '#f5c842' : 'rgba(255,255,255,0.9)'}`,
+          marginLeft: 3,
+          transition: 'border-left-color 0.2s',
+        }}/>
+      </div>
+
+      {/* Live dot */}
+      <div style={{
+        position: 'absolute', top: 10, right: 10,
+        width: 7, height: 7, borderRadius: '50%',
+        background: '#f5c842',
+        animation: 'pulse 2s ease-in-out infinite',
+      }}/>
+
+      {/* TikTok badge */}
+      <div style={{
+        position: 'absolute', top: 10, left: 10,
+        background: 'rgba(0,0,0,0.6)',
+        borderRadius: 6, padding: '3px 7px',
+        fontSize: 9, fontWeight: 800, color: '#fff',
+        letterSpacing: '0.06em',
+        backdropFilter: 'blur(4px)',
+      }}>
+        TikTok
+      </div>
+
+      {/* Label */}
+      <div style={{
+        position: 'relative', zIndex: 1,
+        padding: '0 12px 14px',
+        textAlign: 'center',
+      }}>
+        <div style={{
+          fontSize: 11, fontWeight: 700, color: '#fff',
+          lineHeight: 1.35, marginBottom: 6,
+          textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+        }}>
+          {video.label}
+        </div>
+        <div style={{
+          fontSize: 9, fontWeight: 700,
+          color: hovered ? '#f5c842' : 'rgba(255,255,255,0.5)',
+          letterSpacing: '0.1em', textTransform: 'uppercase',
+          transition: 'color 0.2s',
+        }}>
+          Watch on TikTok →
+        </div>
+      </div>
+    </a>
   )
 }
 
@@ -95,13 +143,11 @@ export default function Videos() {
         🎬 My Videos
       </div>
       <div style={{ fontSize: 11, color: '#ccc', marginBottom: 16 }}>
-        Best viewed in the TikTok app
+        Click any video to watch on TikTok
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-        {VIDEO_IDS.map((v, i) => (
-          <VideoEmbed key={v.id} video={v} index={i}/>
-        ))}
+        {VIDEOS.map((v, i) => <VideoCard key={v.id} video={v} index={i}/>)}
       </div>
 
       <a href="https://www.tiktok.com/@vincelayug20" target="_blank" rel="noreferrer"
