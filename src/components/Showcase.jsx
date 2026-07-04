@@ -34,8 +34,7 @@ function ProductCard({ p, index }) {
       <div style={{
         height: 110,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        position: 'relative',
-        fontSize: 44,
+        position: 'relative', fontSize: 44,
         transition: 'background 0.2s',
         background: hovered ? '#fff8e1' : '#f5f5f3',
       }}>
@@ -107,32 +106,9 @@ export default function Showcase() {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         {filtered.map((p, i) => <ProductCard key={p.name} p={p} index={i}/>)}
       </div>
-
-      <a href="https://vt.tiktok.com/ZSCVQQaRP/?page=TikTokShop"
-        target="_blank" rel="noreferrer"
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          padding: '13px',
-          background: '#f5c842', color: '#1a1a1a',
-          border: 'none', borderRadius: 14,
-          fontSize: 13, fontWeight: 700,
-          textDecoration: 'none',
-          transition: 'background 0.2s, transform 0.15s',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.background = '#e6b800'
-          e.currentTarget.style.transform = 'translateY(-1px)'
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.background = '#f5c842'
-          e.currentTarget.style.transform = 'translateY(0)'
-        }}>
-        <span>🛍</span>
-        Browse Full Showcase on TikTok Shop →
-      </a>
     </div>
   )
 }

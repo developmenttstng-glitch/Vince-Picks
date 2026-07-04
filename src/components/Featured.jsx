@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function Featured({ onCopy }) {
+export default function Featured() {
   const [hovered, setHovered] = useState(false)
   const [clicked, setClicked] = useState(false)
 
@@ -15,31 +15,31 @@ export default function Featured({ onCopy }) {
         fontSize: 10, fontWeight: 700, letterSpacing: '0.14em',
         textTransform: 'uppercase', color: '#bbb', marginBottom: 14,
       }}>
-        ⭐ Featured Product
+        ⭐ Featured
       </div>
 
-      <div className="reveal" style={{
-        border: `1.5px solid ${hovered ? '#f5c842' : '#e8e8e8'}`,
-        borderRadius: 18,
-        overflow: 'hidden',
-        transition: 'border-color 0.3s, transform 0.3s, box-shadow 0.3s',
-        transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
-        boxShadow: hovered ? '0 12px 32px rgba(245,200,66,0.15)' : '0 0 0 rgba(0,0,0,0)',
-        cursor: 'pointer',
-        marginBottom: 24,
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={handleClick}>
+      <a href="https://vt.tiktok.com/ZSCVQQaRP/?page=TikTokShop"
+        target="_blank" rel="noreferrer"
+        className="reveal"
+        style={{
+          display: 'block', textDecoration: 'none',
+          border: `1.5px solid ${hovered ? '#f5c842' : '#e8e8e8'}`,
+          borderRadius: 18, overflow: 'hidden',
+          transition: 'border-color 0.3s, transform 0.3s, box-shadow 0.3s',
+          transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
+          boxShadow: hovered ? '0 12px 32px rgba(245,200,66,0.15)' : 'none',
+          marginBottom: 24,
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onClick={handleClick}>
 
         {/* Dark top with animated basket */}
         <div style={{
-          height: 150,
-          background: '#1a1a1a',
+          height: 150, background: '#1a1a1a',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           position: 'relative', overflow: 'hidden',
         }}>
-          {/* Animated rings */}
           {[0,1,2].map(i => (
             <div key={i} style={{
               position: 'absolute',
@@ -60,7 +60,6 @@ export default function Featured({ onCopy }) {
             🧺
           </div>
 
-          {/* Badge */}
           <div style={{
             position: 'absolute', top: 12, left: 12,
             background: '#f5c842', color: '#1a1a1a',
@@ -71,7 +70,6 @@ export default function Featured({ onCopy }) {
             ⭐ Top Pick
           </div>
 
-          {/* Shimmer on hover */}
           {hovered && (
             <div style={{
               position: 'absolute', inset: 0,
@@ -84,35 +82,26 @@ export default function Featured({ onCopy }) {
 
         {/* Body */}
         <div style={{ padding: '16px 18px 18px' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 4 }}>
-            The Yellow Basket
+          <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 4, color: '#1a1a1a' }}>
+            Browse Full Showcase
           </div>
           <div style={{ fontSize: 12, color: '#888', lineHeight: 1.6, marginBottom: 14 }}>
-            My most recommended product — affordable, durable and featured in all my videos. See it in action on TikTok!
+            All my recommended products — affordable, durable and featured in all my videos. Check them out on TikTok Shop!
           </div>
-          <a href="https://www.tiktok.com/@vincelayug20" target="_blank" rel="noreferrer"
-            onClick={e => e.stopPropagation()}
-            style={{
-              display: 'block', width: '100%',
-              padding: 13,
-              background: '#1a1a1a', color: '#fff',
-              border: 'none', borderRadius: 12,
-              fontSize: 13, fontWeight: 700,
-              textAlign: 'center', textDecoration: 'none',
-              transition: 'background 0.2s, transform 0.15s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = '#f5c842'
-              e.currentTarget.style.color = '#1a1a1a'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = '#1a1a1a'
-              e.currentTarget.style.color = '#fff'
-            }}>
-            Shop on TikTok →
-          </a>
+          <div style={{
+            display: 'block', width: '100%',
+            padding: 13,
+            background: hovered ? '#f5c842' : '#1a1a1a',
+            color: hovered ? '#1a1a1a' : '#fff',
+            borderRadius: 12,
+            fontSize: 13, fontWeight: 700,
+            textAlign: 'center',
+            transition: 'background 0.2s, color 0.2s',
+          }}>
+            Browse Full Showcase →
+          </div>
         </div>
-      </div>
+      </a>
     </div>
   )
 }
