@@ -17,7 +17,6 @@ function ProductCard({ p, index }) {
   return (
     <a href="https://vt.tiktok.com/ZSCVQQaRP/?page=TikTokShop"
       target="_blank" rel="noreferrer"
-      className="reveal"
       style={{
         display: 'block', textDecoration: 'none', color: 'inherit',
         border: `1px solid ${hovered ? '#f5c842' : '#efefef'}`,
@@ -107,7 +106,9 @@ export default function Showcase() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-        {filtered.map((p, i) => <ProductCard key={p.name} p={p} index={i}/>)}
+        {filtered.map((p, i) => (
+          <ProductCard key={`${cat}-${p.name}`} p={p} index={i}/>
+        ))}
       </div>
     </div>
   )
