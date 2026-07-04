@@ -1,47 +1,42 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const VIDEOS = [
-  {
-    id:    '7558021274602081554',
-    label: 'Fish Keeping Tips',
-    emoji: '🐟',
-    bg:    '#0f2027',
-  },
-  {
-    id:    '7598033694791716114',
-    label: 'Car Accessories Haul',
-    emoji: '🚗',
-    bg:    '#1a1a2e',
-  },
-  {
-    id:    '7532351516213038344',
-    label: 'Yellow Basket Review',
-    emoji: '🧺',
-    bg:    '#1c1208',
-  },
-  {
-    id:    '7529768561028435207',
-    label: 'Affiliate Tips 101',
-    emoji: '💰',
-    bg:    '#0d1a0d',
-  },
+  { id: '7558021274602081554', label: 'Fish Keeping Tips',    emoji: '🐟' },
+  { id: '7598033694791716114', label: 'Car Accessories Haul', emoji: '🚗' },
+  { id: '7532351516213038344', label: 'Yellow Basket Review', emoji: '🧺' },
+  { id: '7529768561028435207', label: 'Affiliate Tips 101',   emoji: '💰' },
 ]
 
 function VideoCard({ video, index }) {
-  const [hovered, setHovered] = useState(false)
+  const [hovered,   setHovered]   = useState(false)
+  const [thumb,     setThumb]     = useState(null)
+  const [thumbFail, setThumbFail] = useState(false)
+
   const url = `https://www.tiktok.com/@vincelayug20/video/${video.id}`
+
+  useEffect(() => {
+    // Fetch thumbnail from TikTok oEmbed API via a CORS proxy
+    const oembedUrl = `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`
+    fetch(oembedUrl)
+      .then(r => r.json())
+      .then(data => {
+        if (data.thumbnail_url) setThumb(data.thumbnail_url)
+        else setThumbFail(true)
+      })
+      .catch(() => setThumbFail(true))
+  }, [url])
 
   return (
     <a href={url} target="_blank" rel="noreferrer"
       className="reveal"
       style={{
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'flex-end',
+        display: 'block',
         aspectRatio: '9/16',
-        borderRadius: 16, overflow: 'hidden',
+        borderRadius: 16,
+        overflow: 'hidden',
         textDecoration: 'none',
-        background: video.bg,
         position: 'relative',
+        background: '#111',
         transform: hovered ? 'scale(1.03)' : 'scale(1)',
         transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)',
         transitionDelay: `${index * 0.05}s`,
@@ -50,73 +45,92 @@ function VideoCard({ video, index }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
 
+      {/* Real thumbnail or fallback */}
+      {thumb && !thumbFail ? (
+        <img src={thumb} alt={video.label}
+          style={{
+            width: '100%', height: '100%',
+            objectFit: 'cover',
+            transform: hovered ? 'scale(1.06)' : 'scale(1)',
+            transition: 'transform 0.4s ease',
+          }}
+          onError={() => setThumbFail(true)}
+        />
+      ) : (
+        <div style={{
+          width: '100%', height: '100%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 40, background: '#1a1a1a',
+        }}>
+          {thumbFail ? video.emoji : (
+            // Loading skeleton shimmer
+            <div style={{
+              width: '100%', height: '100%',
+              background: 'linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%)',
+              backgroundSize: '200% 100%',
+              animation: 'shimmer 1.4s infinite',
+            }}/>
+          )}
+        </div>
+      )}
+
       {/* Gradient overlay */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 55%)',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.08) 55%)',
       }}/>
 
-      {/* Emoji */}
+      {/* Play button */}
       <div style={{
-        position: 'absolute', top: '30%', left: '50%',
-        transform: `translate(-50%, -50%) ${hovered ? 'scale(1.2)' : 'scale(1)'}`,
-        fontSize: 36,
-        transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)',
-        filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
-      }}>
-        {video.emoji}
-      </div>
-
-      {/* Play circle */}
-      <div style={{
-        position: 'absolute', top: '52%', left: '50%',
+        position: 'absolute', top: '42%', left: '50%',
         transform: `translate(-50%, -50%) ${hovered ? 'scale(1.15)' : 'scale(1)'}`,
         width: 40, height: 40, borderRadius: '50%',
-        border: `2px solid ${hovered ? '#f5c842' : 'rgba(255,255,255,0.5)'}`,
+        border: `2px solid ${hovered ? '#f5c842' : 'rgba(255,255,255,0.6)'}`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: hovered ? 'rgba(245,200,66,0.15)' : 'rgba(255,255,255,0.05)',
-        transition: 'all 0.25s',
+        background: hovered ? 'rgba(245,200,66,0.15)' : 'rgba(0,0,0,0.3)',
+        backdropFilter: 'blur(4px)',
+        transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
       }}>
         <div style={{
           width: 0, height: 0,
           borderTop: '7px solid transparent',
           borderBottom: '7px solid transparent',
-          borderLeft: `12px solid ${hovered ? '#f5c842' : 'rgba(255,255,255,0.9)'}`,
+          borderLeft: `12px solid ${hovered ? '#f5c842' : '#fff'}`,
           marginLeft: 3,
           transition: 'border-left-color 0.2s',
         }}/>
       </div>
 
+      {/* TikTok badge */}
+      <div style={{
+        position: 'absolute', top: 10, left: 10,
+        background: 'rgba(0,0,0,0.55)',
+        backdropFilter: 'blur(6px)',
+        borderRadius: 6, padding: '3px 7px',
+        fontSize: 9, fontWeight: 800, color: '#fff',
+        letterSpacing: '0.06em',
+      }}>
+        TikTok
+      </div>
+
       {/* Live dot */}
       <div style={{
-        position: 'absolute', top: 10, right: 10,
+        position: 'absolute', top: 12, right: 12,
         width: 7, height: 7, borderRadius: '50%',
         background: '#f5c842',
         animation: 'pulse 2s ease-in-out infinite',
       }}/>
 
-      {/* TikTok badge */}
-      <div style={{
-        position: 'absolute', top: 10, left: 10,
-        background: 'rgba(0,0,0,0.6)',
-        borderRadius: 6, padding: '3px 7px',
-        fontSize: 9, fontWeight: 800, color: '#fff',
-        letterSpacing: '0.06em',
-        backdropFilter: 'blur(4px)',
-      }}>
-        TikTok
-      </div>
-
       {/* Label */}
       <div style={{
-        position: 'relative', zIndex: 1,
-        padding: '0 12px 14px',
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        padding: '0 12px 14px', zIndex: 1,
         textAlign: 'center',
       }}>
         <div style={{
           fontSize: 11, fontWeight: 700, color: '#fff',
-          lineHeight: 1.35, marginBottom: 6,
-          textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+          lineHeight: 1.35, marginBottom: 5,
+          textShadow: '0 1px 4px rgba(0,0,0,0.8)',
         }}>
           {video.label}
         </div>
